@@ -1,0 +1,38 @@
+# Virtual environment
+venv/
+env/
+*.env
+
+# Byte-code files
+*.pyc
+__pycache__/
+
+# Editor/IDE specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+sdist/
+
+# Test data/results
+data/
+results/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Sensitive information (example, replace with actual file names)
+config.ini
+secrets.py
