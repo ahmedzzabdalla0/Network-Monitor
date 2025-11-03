@@ -1,0 +1,18 @@
+main:
+  # 10 (DEBUG) | 20 (INFO) | 30 (WARNING) | 40 (ERROR) | 50 (CRITICAL)
+  logging_level: 30
+
+  # Columns will be presented
+  columns:
+    - Name
+    - IP
+    - MAC
+    - Source
+    - Device Type
+    - Signal Level
+
+router:
+  excluded_macs:
+    - b2:19:21:09:96:75
+
+  excluded_ips: []

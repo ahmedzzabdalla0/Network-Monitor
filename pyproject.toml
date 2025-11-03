@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wlan"
+version = "0.1.0"
+description = "Python client for Zyxel router API"
+requires-python = ">=3.8"
+
+dependencies = [
+    "requests>=2.31.0",
+    "pandas>=2.0.0",
+    "pycryptodome>=3.18.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.7.0",
+    "mypy>=1.5.0",
+]
+
+[project.scripts]
+wlan = "wlan.main:main"
+wlan-cli = "wlan.router.client:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
