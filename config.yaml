@@ -12,6 +12,8 @@ main:
     - Signal Level
 
 router:
+  protocol: http
+  ip: 192.168.1.1
   excluded_macs:
     - b2:19:21:09:96:75
 
