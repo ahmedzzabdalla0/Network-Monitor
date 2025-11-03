@@ -1,14 +1,17 @@
 import json
 from dataclasses import dataclass
 
-from wlan.managers import EnvManager
+from wlan.managers import ConfigManager, EnvManager
 
 
 @dataclass(frozen=True)
 class ZyxelGatewayURLs:
     """Base URLs for the Zyxel VMG3625-T50B router's API."""
 
-    BASE_URL = 'http://192.168.1.1'
+    PROTOCOL = ConfigManager.get("router.protocol", "http")
+    IP = ConfigManager.get("router.ip", "192.168.1.1")
+
+    BASE_URL = "://".join((PROTOCOL, IP))
 
     LOGIN = f'{BASE_URL}/UserLogin'
     HOSTS = f'{BASE_URL}/cgi-bin/DAL?oid=lanhosts'
