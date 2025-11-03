@@ -12,6 +12,9 @@ logging_file = os.path.join(BASE_PATH, "running.log")
 logging_level = int(ConfigManager.get("main.logging_level", 20))
 loggin_format = '%(asctime)s - %(levelname)s - %(message)s'
 
+if os.path.exists(logging_file):
+    os.remove(logging_file)
+
 logging.basicConfig(
     filename=logging_file,
     level=logging_level,
