@@ -153,8 +153,9 @@ class TLExtenderUtils:
             df = DataframeUtils.exclude_rows(df, S.IP_ADDRESS, excluded_ips)
             df = DataframeUtils.exclude_rows(df, S.MAC_ADDRESS, excluded_macs)
 
-            # Add source column
+            # Add default values to columns
             df[S.SOURCE] = DeviceSource.EXTENDER.value
+            df[S.SIGNAL_LEVEL] = '0'
 
             # Filter columns
             existing_columns = [

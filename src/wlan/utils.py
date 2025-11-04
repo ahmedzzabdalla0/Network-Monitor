@@ -69,6 +69,15 @@ class PathUtils:
             return os.path.abspath(".")
 
     @staticmethod
+    def get_bundled_path() -> str:
+        if hasattr(sys, '_MEIPASS'):
+            # We are running in a bundled .exe
+            return sys._MEIPASS
+        else:
+            # We are running in a normal Python script
+            return os.path.abspath(".")
+
+    @staticmethod
     def load_config(file_name="config.yaml", base_path: str = None) -> Dict:
         if base_path is None:
             base_path = PathUtils.get_base_path()

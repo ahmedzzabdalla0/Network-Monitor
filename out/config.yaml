@@ -2,7 +2,7 @@ main:
   wait_time: 3
 
   # 10 (DEBUG) | 20 (INFO) | 30 (WARNING) | 40 (ERROR) | 50 (CRITICAL)
-  logging_level: 20
+  logging_level: 30
 
   # Columns will be presented [Note: Values Of Columns Must Follow The Standard Format]
   columns:
