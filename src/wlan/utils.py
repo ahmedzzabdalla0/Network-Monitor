@@ -51,6 +51,9 @@ class DataframeUtils:
         if S.MAC_ADDRESS in merged.columns:
             merged.drop_duplicates(subset=[S.MAC_ADDRESS], inplace=True)
 
+        merged.reset_index(drop=True, inplace=True)
+        merged.index = merged.index + 1
+
         return merged
 
 
