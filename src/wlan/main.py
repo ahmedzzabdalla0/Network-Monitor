@@ -66,14 +66,13 @@ def main():
 
     try:
         while True:
-            os.system("cls")
             devices = get_devices()
             notifier.process(devices)
+            os.system("cls")
             print(devices)
-            log_msg = f"[+] Waiting {wait_time} second/s ..."
-            logger.info(log_msg)
-            print(log_msg)
+            print(f"[+] Waiting {wait_time} second/s ...")
             sleep(wait_time)
+            print("[+] Fetching ...")
     finally:
         router.logout()
 
