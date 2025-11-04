@@ -56,3 +56,8 @@ extender:
 
 telegram:
   chat_id: 7762730353
+
+windows_notify:
+  columns:
+    - Name
+    - Source

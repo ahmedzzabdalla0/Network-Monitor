@@ -70,9 +70,9 @@ def main():
             notifier.process(devices)
             os.system("cls")
             print(devices)
-            print(f"[+] Waiting {wait_time} second/s ...")
+            print(f"[+] Waiting {wait_time} second/s ...", flush=True)
             sleep(wait_time)
-            print("[+] Fetching ...")
+            print("[+] Fetching ...", flush=True)
     finally:
         router.logout()
 

@@ -6,6 +6,8 @@ from winotify import Notification, audio
 from wlan.constants import AppConstants
 from wlan.enums import DeviceChangeEvent
 from wlan.exceptions import APIError
+from wlan.managers.config_manager import ConfigManager
+from wlan.schemas import StandardColumns as S
 
 logger = logging.getLogger(__name__)
 
@@ -37,19 +39,22 @@ class WindowsNotifier:
             str: Brief summary of devices (limited for notification display)
         """
         lines = []
-        max_devices = 3  # Limit to 3 devices for notification brevity
+        max_devices = 3
 
         for idx, (_, device) in enumerate(df.head(max_devices).iterrows(), 1):
-            # Get key fields (MAC, IP, Hostname if available)
             device_info = []
+            default_columns = [S.HOST_NAME, S.SOURCE]
+            columns = ConfigManager.get("windows_notify.columns")
 
-            for col in df.columns:
-                value = device[col]
-                if pd.notna(value):
-                    device_info.append(f"{col}: {value}")
+            if not isinstance(columns, list) or not len(columns):
+                logger.warning("Parsing Warning: can't read columns as well")
+                columns = default_columns
 
-            # Limit to 2 fields per device
-            lines.append(f"Device {idx}: {', '.join(device_info[:2])}")
+            for column in columns:
+                if column in df.columns and pd.notna(device[column]):
+                    device_info.append(device[column])
+
+            lines.append(': '.join(device_info[:2]))
 
         if len(df) > max_devices:
             lines.append(f"... and {len(df) - max_devices} more")
