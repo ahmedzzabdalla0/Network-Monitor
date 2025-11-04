@@ -93,7 +93,7 @@ class TLExtender(metaclass=SingletonMeta):
 
         now = datetime.now()
         period = self.last_refresh - now
-        session_period = ConfigManager.get("extender.session_time", 3)
+        session_period = int(ConfigManager.get("extender.session_time", 3))
 
         if period >= timedelta(minutes=session_period):
             logger.info("The period session has exceeded.")
