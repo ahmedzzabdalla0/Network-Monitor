@@ -1,5 +1,7 @@
 
-import wlan.logging
+import pandas as pd
+import wlan.logging_runner
+from wlan.extender.client import TLExtender
 import logging
 
 from wlan.managers import TimerManager
@@ -13,8 +15,10 @@ BASE_PATH = PathUtils.get_base_path()
 
 def main():
     with TimerManager():
-        router_pd = get_router_df()
-    print(router_pd)
+        extender = TLExtender()
+        extender_df = extender.get_connected_devices()
+    router_pd = get_router_df()
+    print(pd.concat([extender_df, router_pd]).fillna("Unknown"))
 
 
 if __name__ == "__main__":

@@ -16,5 +16,10 @@ router:
   ip: 192.168.1.1
   excluded_macs:
     - b2:19:21:09:96:75
+  excluded_ips: []
 
+extender:
+  protocol: http
+  ip: 192.168.1.207
+  excluded_macs: []
   excluded_ips: []

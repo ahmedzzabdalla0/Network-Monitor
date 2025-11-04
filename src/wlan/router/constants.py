@@ -5,7 +5,7 @@ from wlan.managers import ConfigManager, EnvManager
 
 
 @dataclass(frozen=True)
-class ZyxelGatewayURLs:
+class ZyxelURLs:
     """Base URLs for the Zyxel VMG3625-T50B router's API."""
 
     PROTOCOL = ConfigManager.get("router.protocol", "http")
@@ -24,7 +24,7 @@ class ZyxelGatewayURLs:
 
 
 @dataclass(frozen=True)
-class ZyxelLoginConstants:
+class ZyxelLogin:
     """Hardcoded keys and data used for the router's login encryption process."""
 
     ENV_PREFIX = "ROUTER_"

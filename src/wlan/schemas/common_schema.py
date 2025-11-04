@@ -82,3 +82,7 @@ class StandardColumns:
 
     # --- PARENTAL CONTROLS ---
     INTERNET_BLOCKING_ENABLED: str = "Internet_Blocking_Enabled"
+
+    # === NEW: Fields specific to TLExtender Management ===
+    BIND_ENTRY: str = "Bind_Entry"
+    STA_MGT_ENTRY: str = "Station_Mgt_Entry"
