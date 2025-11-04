@@ -1,4 +1,5 @@
 
+from datetime import datetime, timedelta
 import logging
 
 import pandas as pd
@@ -7,6 +8,7 @@ from requests.exceptions import RequestException
 
 from wlan.exceptions import (APIError, AuthenticationError, DataParsingError,
                              EncryptionError, SessionError)
+from wlan.managers.config_manager import ConfigManager
 from wlan.metaclasses import SingletonMeta
 
 from .constants import TLExtenderData, TLExtenderLogin, TLExtenderURLs
@@ -21,6 +23,7 @@ logger = logging.getLogger(__name__)
 class TLExtender(metaclass=SingletonMeta):
     def __init__(self):
         self.session = Session()
+        self.last_refresh = None
         self.id = None
 
     def login(self) -> str:
@@ -69,6 +72,7 @@ class TLExtender(metaclass=SingletonMeta):
             logger.error(error_msg)
             raise AuthenticationError(error_msg) from e
 
+        self.last_refresh = datetime.now()
         logger.info("Successfully logged in to TL-Extender")
         return self.id
 
@@ -83,9 +87,17 @@ class TLExtender(metaclass=SingletonMeta):
             APIError: If request fails
             DataParsingError: If response parsing fails
         """
-        if not self.id:
+        if not self.id or not self.last_refresh:
             raise SessionError(
                 "Cannot retrieve devices: Not logged in. Call login() first.")
+
+        now = datetime.now()
+        period = self.last_refresh - now
+        session_period = ConfigManager.get("extender.session_time", 3)
+
+        if period >= timedelta(minutes=session_period):
+            logger.info("The period session has exceeded.")
+            self.login()
 
         try:
             response = self.session.post(
