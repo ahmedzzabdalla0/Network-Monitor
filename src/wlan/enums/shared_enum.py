@@ -23,3 +23,11 @@ class DeviceSource(Enum):
     WIFI_2 = "WIFI 2.4G"
     WIFI_5 = "WIFI 5G"
     NMAP = "Nmap"
+
+
+class DeviceChangeEvent(str, Enum):
+    """Events for device state changes."""
+
+    START = "start"
+    CONNECTED = "connected"
+    DISCONNECTED = "disconnected"

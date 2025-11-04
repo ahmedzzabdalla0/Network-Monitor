@@ -1,20 +1,23 @@
 import json
 import logging
+from time import sleep
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
 from requests import RequestException, Response, Session
 
-from .constants import ZyxelURLs, ZyxelLogin
-from .exceptions import (APIError, AuthenticationError, DataParsingError,
-                         SessionError)
+from wlan.exceptions import (APIError, AuthenticationError, DataParsingError,
+                             SessionError)
+from wlan.metaclasses import SingletonMeta
+
+from .constants import ZyxelLogin, ZyxelURLs
 from .utils import ZyxelGatewayUtils
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 
-class ZyxelClient:
+class ZyxelClient(metaclass=SingletonMeta):
     """
     Client for interacting with the Zyxel VMG3625-T50B router's API.
     Handles session management, login, encryption, and data retrieval.
@@ -170,19 +173,13 @@ class ZyxelClient:
         logger.info(f"Login successful. Session Key: {self.session_key}")
         return True
 
-    def logout(self) -> Dict:
+    def logout(self) -> None:
         """
         Logs out the current session using the stored session key.
-
-        Returns:
-            Logout response as dict.
-
-        Raises:
-            SessionError: If not logged in or logout fails.
         """
         if not self.session_key:
-            raise SessionError(
-                "Cannot logout: Not logged in or session key is missing")
+            logger.info("No Session key found to logout.")
+            return
 
         logger.info("Logging out...")
 
@@ -195,7 +192,8 @@ class ZyxelClient:
             response.raise_for_status()
         except RequestException as e:
             logger.error(f"Logout request failed: {e}")
-            raise APIError(f"Logout request failed: {e}") from e
+        except Exception as e:
+            logger.error(f"Unexpected Error: Logout failed: {e}")
 
         try:
             logout_data = response.json()
@@ -204,8 +202,8 @@ class ZyxelClient:
             return logout_data
         except json.JSONDecodeError as e:
             logger.warning(f"Logout response not JSON: {e}")
-            self.session_key = None
-            return {"status": "logged_out", "note": "Non-JSON response received"}
+        except Exception as e:
+            logger.error(f"Unexpected Error: Logout failed: {e}")
 
     def _decrypt_response(self, response: Response) -> Union[Dict, List, str]:
         """
@@ -310,30 +308,12 @@ class ZyxelClient:
         return ZyxelGatewayUtils.wlan_handle(devices_data, hosts)
 
 
-def get_router_df() -> pd.DataFrame:
-    """
-    Logs in using ZyxelClient, retrieves and processes all router data,
-    then returns it as a pandas DataFrame.
-
-    Args:
-        None
-
-    Returns:
-        pd.DataFrame: The processed router data.
-
-    Performance:
-        Takes approximately 1 second to complete.
-    """
-    with ZyxelClient() as router:
-        router.login_with_cached_data()
-        return router.get_connected_devices()
-
-
 def main():
     """Main execution function with proper error handling."""
     try:
-        router_df = get_router_df()
-        print(router_df)
+        with ZyxelClient() as router:
+            router.login_with_cached_data()
+            print(router.get_connected_devices())
 
     except AuthenticationError as e:
         logger.error(f"Authentication failed: {e}")

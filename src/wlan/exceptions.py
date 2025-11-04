@@ -1,31 +1,31 @@
-"""Custom exceptions for Zyxel router client."""
+"""Custom exceptions for network clients."""
 
 
-class ZyxelRouterError(Exception):
-    """Base exception for all Zyxel router-related errors."""
+class NetworkClientError(Exception):
+    """Base exception for all network client-related errors."""
     pass
 
 
-class EncryptionError(ZyxelRouterError):
+class EncryptionError(NetworkClientError):
     """Raised when encryption/decryption operations fail."""
     pass
 
 
-class AuthenticationError(ZyxelRouterError):
+class AuthenticationError(NetworkClientError):
     """Raised when login or authentication fails."""
     pass
 
 
-class SessionError(ZyxelRouterError):
+class SessionError(NetworkClientError):
     """Raised when session-related operations fail."""
     pass
 
 
-class APIError(ZyxelRouterError):
+class APIError(NetworkClientError):
     """Raised when API requests fail or return unexpected data."""
     pass
 
 
-class DataParsingError(ZyxelRouterError):
+class DataParsingError(NetworkClientError):
     """Raised when response data cannot be parsed correctly."""
     pass
