@@ -92,7 +92,7 @@ class TLExtender(metaclass=SingletonMeta):
                 "Cannot retrieve devices: Not logged in. Call login() first.")
 
         now = datetime.now()
-        period = self.last_refresh - now
+        period = now - self.last_refresh
         session_period = int(ConfigManager.get("extender.session_time", 3))
 
         if period >= timedelta(minutes=session_period):
