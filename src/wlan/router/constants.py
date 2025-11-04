@@ -36,7 +36,8 @@ class ZyxelLogin:
     ENCODED_PASSWORD = EnvManager.get(ENV_PREFIX + "ENCODED_PASSWORD")
     ENCRYPTED_CONTENT = EnvManager.get(ENV_PREFIX + "ENCRYPTED_CONTENT")
     ENCRYPTED_KEY = EnvManager.get(ENV_PREFIX + "ENCRYPTED_KEY")
-    RSA_PUBLIC_KEY = EnvManager.get(ENV_PREFIX + "RSA_PUBLIC_KEY")
+    RSA_PUBLIC_KEY = EnvManager.get(
+        ENV_PREFIX + "RSA_PUBLIC_KEY").replace("\\n", "\n")
     FINAL_POST_DATA = '"iv": "ZQ9YwwFtzH8+JlstwWUa4zDOtfrZ2MHPODYUc7QhA7I="}'
     POST_DATA = {"content": ENCRYPTED_CONTENT, "key": ENCRYPTED_KEY, "iv": IV}
     FINAL_POST_DATA = json.dumps(POST_DATA, separators=(',', ':'))

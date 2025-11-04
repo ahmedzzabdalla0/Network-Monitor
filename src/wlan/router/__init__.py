@@ -1,2 +1,2 @@
-from .client import ZyxelClient, get_router_df
+from .client import ZyxelClient
 from .constants import ZyxelURLs, ZyxelLogin

@@ -12,14 +12,13 @@ from Crypto.PublicKey import RSA
 from Crypto.Util.Padding import pad, unpad
 
 from wlan.enums.shared_enum import DeviceSource
+from wlan.exceptions import DataParsingError, EncryptionError
 from wlan.managers import ConfigManager
 from wlan.mappers import HOST_COLUMNS_MAP, WLAN_COLUMNS_MAP
 from wlan.schemas import HostColumns as H
 from wlan.schemas import StandardColumns as S
 from wlan.schemas import WlanColumns
 from wlan.utils import DataframeUtils
-
-from .exceptions import DataParsingError, EncryptionError
 
 logger = logging.getLogger(__name__)
 
@@ -268,12 +267,8 @@ class ZyxelGatewayUtils:
 
         # Handle the device type from icons
         primary_icons = hosts_df[H.DEVICE_ICON].str.slice(1).replace("", pd.NA)
-        fallback_base = hosts_df[H.ICON].str.slice(1).str.capitalize()
-        fallback_icons = fallback_base.mask(
-            fallback_base.str.len() <= 2,
-            fallback_base.str.upper()
-        )
-        hosts_df[H.DEVICE_ICON] = primary_icons.fillna(fallback_icons)
+        fallback_base = hosts_df[H.ICON].str.slice(1).str.upper()
+        hosts_df[H.DEVICE_ICON] = primary_icons.fillna(fallback_base)
 
         # Collect all hostnames and add them into HostName column
         hosts_df[H.CURRENT_HOST_NAME] = hosts_df[H.CURRENT_HOST_NAME].replace(
