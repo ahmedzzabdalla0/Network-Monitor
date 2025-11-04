@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 from winotify import Notification, audio
 
+from wlan.constants import AppConstants
 from wlan.enums import DeviceChangeEvent
 from wlan.exceptions import APIError
 
@@ -16,14 +17,15 @@ class WindowsNotifier:
     Windows toast notifications when devices connect or disconnect.
     """
 
-    def __init__(self, app_id: str = "WLAN Monitor"):
+    def __init__(self):
         """Initialize Windows notifier.
 
         Args:
             app_id: Application ID shown in notification (default: "WLAN Monitor")
         """
-        self.app_id = app_id
-        logger.info(f"WindowsNotifier initialized with app_id: {app_id}")
+        self.app_id = AppConstants.APP_ID
+        logger.info(
+            f"WindowsNotifier initialized with app_id: {AppConstants.APP_ID}")
 
     def _format_device_summary(self, df: pd.DataFrame) -> str:
         """Format device information as a brief summary.
@@ -69,19 +71,19 @@ class WindowsNotifier:
         config = {
             DeviceChangeEvent.CONNECTED: {
                 "title": f"✅ {device_count} {device_word} connected",
-                "icon": None,  # Can add icon path if needed
+                "icon": AppConstants.ICON_PATH,
                 "audio": audio.Default
             },
             DeviceChangeEvent.DISCONNECTED: {
                 "title": f"❌ {device_count} {device_word} disconnected",
-                "icon": None,
+                "icon": AppConstants.ICON_PATH,
                 "audio": audio.Default
             }
         }
 
         return config.get(event, {
             "title": f"ℹ️ Device update: {device_count} {device_word}",
-            "icon": None,
+            "icon": AppConstants.ICON_PATH,
             "audio": audio.Default
         })
 
