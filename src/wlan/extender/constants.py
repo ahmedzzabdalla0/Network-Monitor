@@ -1,7 +1,31 @@
+import json
 from dataclasses import dataclass
+
+from wlan.managers import ConfigManager, EnvManager
 
 
 @dataclass(frozen=True)
-class TLExtenderConstants:
-    R_SU_ENCRYPT = "yLwVl0zKqws7LgKPRQ84Mdt708T1qQ3Ha7xv3H7NyU84p21BriUWBU43odz3iP4rBL3cD02KZciXTysVXiV8ngg6vL48rPJyAUw0HurW20xqxv9aYb4M9wK1Ae0wlro510qXeU07kV57fQMc8L6aLgMLwygtc0F10a0Dg70TOoouyFhdysuRMO51yY5ZlOZZLEal1h0t9YQW0Ko7oBwmCAHoic4HYbUyVeU3sfQ1xtXcPcf1aT303wAQhv66qzW"
-    T_SU_ENCRYPT = "RDpbLfCPsJZ7fiv"
+class TLExtenderURLs:
+
+    PROTOCOL = ConfigManager.get("extender.protocol", "http")
+    IP = ConfigManager.get("extender.ip", "192.168.1.207")
+
+    BASE_URL = "://".join((PROTOCOL, IP))
+
+    GET_TOKEN = f'{BASE_URL}/?code=7&asyn=1'
+    CONFIRM_ID = f'{BASE_URL}/?code=7&asyn=0'
+    HOSTS = f'{BASE_URL}/?code=2&asyn=0'
+
+
+@dataclass(frozen=True)
+class TLExtenderData:
+
+    HOSTS = "13|1,0,0"
+
+
+@dataclass(frozen=True)
+class TLExtenderLogin:
+    PASSWORD = EnvManager.get("EXTENDER_PASSWORD")
+    HEADERS = dict(Referer=TLExtenderURLs.BASE_URL)
+    R_SU_ENCRYPT = EnvManager.get("EXTENDER_R_SU_ENCRYPT")
+    T_SU_ENCRYPT = EnvManager.get("EXTENDER_T_SU_ENCRYPT")

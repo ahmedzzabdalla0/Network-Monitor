@@ -11,6 +11,7 @@ from Crypto.Cipher._mode_cbc import CbcMode
 from Crypto.PublicKey import RSA
 from Crypto.Util.Padding import pad, unpad
 
+from wlan.enums.shared_enum import DeviceSource
 from wlan.managers import ConfigManager
 from wlan.mappers import HOST_COLUMNS_MAP, WLAN_COLUMNS_MAP
 from wlan.schemas import HostColumns as H
@@ -225,7 +226,7 @@ class ZyxelGatewayUtils:
         return ZyxelGatewayUtils.decrypt_aes(key, iv, content)
 
     @staticmethod
-    def parse_wlan(res: str, freq: Optional[int] = 2.4) -> pd.DataFrame:
+    def parse_wlan(res: str, source: DeviceSource = DeviceSource.WIFI_2) -> pd.DataFrame:
         """
         Parsing the wlan response (res[0]['result']) and convert it to DataFrame (With StandardColumns).
 
@@ -257,7 +258,7 @@ class ZyxelGatewayUtils:
 
         df = pd.DataFrame(final_arr[1:], columns=final_arr[0])
         df[WlanColumns.MAC_ADDRESS] = df[WlanColumns.MAC_ADDRESS].str.lower()
-        df[S.SOURCE] = f"WIFI {freq}G" if freq else "Router"
+        df[S.SOURCE] = source.value
 
         return df.rename(columns=WLAN_COLUMNS_MAP)
 
@@ -288,17 +289,21 @@ class ZyxelGatewayUtils:
     @staticmethod
     def wlan_handle(wlan_response: List, hosts: pd.DataFrame) -> pd.DataFrame:
 
+        excluded_ips: List = ConfigManager.get("router.excluded_ips", [])
         excluded_macs: List = ConfigManager.get("router.excluded_macs", [])
         filtered_columns: List = ConfigManager.get("main.columns", [])
 
         wlan2 = ZyxelGatewayUtils.parse_wlan(wlan_response[0]['result'])
-        wlan5 = ZyxelGatewayUtils.parse_wlan(wlan_response[0]['result5'], 5)
+        wlan5 = ZyxelGatewayUtils.parse_wlan(
+            wlan_response[0]['result5'], DeviceSource.WIFI_5)
 
         wlan = pd.concat([wlan2, wlan5])
 
         devices = DataframeUtils.merge_only_on_left(wlan, hosts, S.MAC_ADDRESS)
         devices = DataframeUtils.exclude_rows(
             devices, S.MAC_ADDRESS, excluded_macs)
+        devices = DataframeUtils.exclude_rows(
+            devices, S.IP_ADDRESS, excluded_ips)
 
         existing_columns = [
             col for col in filtered_columns if col in devices.columns]

@@ -19,5 +19,7 @@ class DeviceType(Enum):
 
 class DeviceSource(Enum):
     """Source of device discovery"""
-    EXTENDER = "extender"
-    NMAP = "nmap"
+    EXTENDER = "Extender"
+    WIFI_2 = "WIFI 2.4G"
+    WIFI_5 = "WIFI 5G"
+    NMAP = "Nmap"

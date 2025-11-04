@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Union
 import pandas as pd
 from requests import RequestException, Response, Session
 
-from .constants import ZyxelGatewayURLs, ZyxelLoginConstants
+from .constants import ZyxelURLs, ZyxelLogin
 from .exceptions import (APIError, AuthenticationError, DataParsingError,
                          SessionError)
 from .utils import ZyxelGatewayUtils
@@ -42,8 +42,8 @@ class ZyxelClient:
 
     def login(
         self,
-        username: str = ZyxelLoginConstants.USERNAME,
-        password: str = ZyxelLoginConstants.PASSWORD
+        username: str = ZyxelLogin.USERNAME,
+        password: str = ZyxelLogin.PASSWORD
     ) -> bool:
         """
         Performs login with username and password by encrypting credentials.
@@ -66,7 +66,7 @@ class ZyxelClient:
             encoded_password = ZyxelGatewayUtils.encode_password(password)
 
             # Prepare content object
-            raw_content_obj = ZyxelLoginConstants.RAW_OBJECT.copy()
+            raw_content_obj = ZyxelLogin.RAW_OBJECT.copy()
             raw_content_obj["Input_Account"] = username
             raw_content_obj["Input_Passwd"] = encoded_password
 
@@ -75,7 +75,7 @@ class ZyxelClient:
 
             # Encrypt encryption_key using RSA
             rsa_encrypted_key = ZyxelGatewayUtils.encrypt_rsa(
-                ZyxelLoginConstants.RSA_PUBLIC_KEY, self.encryption_key
+                ZyxelLogin.RSA_PUBLIC_KEY, self.encryption_key
             )
 
             # Encrypt login data
@@ -91,7 +91,7 @@ class ZyxelClient:
 
             # Send login request
             response = self.session.post(
-                ZyxelGatewayURLs.LOGIN,
+                ZyxelURLs.LOGIN,
                 data=login_payload,
                 timeout=10
             )
@@ -135,12 +135,12 @@ class ZyxelClient:
         """
         logger.info("Attempting login using cached credentials...")
 
-        self.encryption_key = ZyxelLoginConstants.KEY
-        login_data = ZyxelLoginConstants.FINAL_POST_DATA
+        self.encryption_key = ZyxelLogin.KEY
+        login_data = ZyxelLogin.FINAL_POST_DATA
 
         try:
             response = self.session.post(
-                ZyxelGatewayURLs.LOGIN,
+                ZyxelURLs.LOGIN,
                 data=login_data,
                 timeout=10
             )
@@ -188,7 +188,7 @@ class ZyxelClient:
 
         try:
             response = self.session.post(
-                ZyxelGatewayURLs.LOGOUT,
+                ZyxelURLs.LOGOUT,
                 params={"sessionkey": self.session_key},
                 timeout=10
             )
@@ -252,7 +252,7 @@ class ZyxelClient:
         logger.info("Scanning all hosts...")
 
         try:
-            response = self.session.get(ZyxelGatewayURLs.HOSTS, timeout=10)
+            response = self.session.get(ZyxelURLs.HOSTS, timeout=10)
             response.raise_for_status()
         except RequestException as e:
             logger.error(f"Device scan request failed: {e}")
@@ -292,7 +292,7 @@ class ZyxelClient:
         logger.info("Scanning connected devices...")
 
         try:
-            response = self.session.get(ZyxelGatewayURLs.WLAN, timeout=10)
+            response = self.session.get(ZyxelURLs.WLAN, timeout=10)
             response.raise_for_status()
         except RequestException as e:
             logger.error(f"Device scan request failed: {e}")
