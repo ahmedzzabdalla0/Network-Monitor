@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wlan"
-version = "1.1.0"
+version = "1.1.1"
 description = "Python client for Zyxel router API"
 requires-python = ">=3.8"
 
