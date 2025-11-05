@@ -65,31 +65,31 @@ class ZyxelClient(metaclass=SingletonMeta):
         logger.info(f"Attempting login for user: {username}")
 
         try:
-            # Encode password
+            # Encode the password using Base64 encoding
             encoded_password = ZyxelGatewayUtils.encode_password(password)
 
-            # Prepare content object
+            # Build login payload with username and encoded password
             raw_content_obj = ZyxelLogin.RAW_OBJECT.copy()
             raw_content_obj["Input_Account"] = username
             raw_content_obj["Input_Passwd"] = encoded_password
+            raw_content = ZyxelGatewayUtils.stringify_content(raw_content_obj)
 
-            # Generate encryption keys
+            # Generate random AES key and IV
             self.encryption_key, iv = ZyxelGatewayUtils.generate_aes_key_iv()
 
-            # Encrypt encryption_key using RSA
-            rsa_encrypted_key = ZyxelGatewayUtils.encrypt_rsa(
+            # Encrypt the encryption key using the RSA public key
+            encrypted_key = ZyxelGatewayUtils.encrypt_rsa(
                 ZyxelLogin.RSA_PUBLIC_KEY, self.encryption_key
             )
 
-            # Encrypt login data
-            raw_content = ZyxelGatewayUtils.stringify_content(raw_content_obj)
+            # AES-encrypt the raw login content
             encrypted_content = ZyxelGatewayUtils.encrypt_aes(
                 self.encryption_key, iv, raw_content
             )
 
             # Prepare payload
             login_payload = ZyxelGatewayUtils.create_post_payload(
-                encrypted_content, rsa_encrypted_key, iv
+                encrypted_content, encrypted_key, iv
             )
 
             # Send login request
@@ -117,6 +117,7 @@ class ZyxelClient(metaclass=SingletonMeta):
                 f"Unexpected login response format: {type(login_info)}")
 
         self.session_key = login_info.get("sessionkey")
+
         if not self.session_key:
             logger.error(f"Login response missing sessionkey: {login_info}")
             raise AuthenticationError(
@@ -138,7 +139,7 @@ class ZyxelClient(metaclass=SingletonMeta):
         """
         logger.info("Attempting login using cached credentials...")
 
-        self.encryption_key = ZyxelLogin.KEY
+        self.encryption_key = ZyxelLogin.ENCRYPTION_KEY
         login_data = ZyxelLogin.FINAL_POST_DATA
 
         try:
