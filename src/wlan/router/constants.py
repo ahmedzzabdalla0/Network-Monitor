@@ -29,18 +29,18 @@ class ZyxelLogin:
 
     ENV_PREFIX = "ROUTER_"
 
-    KEY = EnvManager.get(ENV_PREFIX + "KEY")
-    IV = EnvManager.get(ENV_PREFIX + "IV")
-    USERNAME = EnvManager.get(ENV_PREFIX + "USERNAME")
-    PASSWORD = EnvManager.get(ENV_PREFIX + "PASSWORD")
-    ENCODED_PASSWORD = EnvManager.get(ENV_PREFIX + "ENCODED_PASSWORD")
-    ENCRYPTED_CONTENT = EnvManager.get(ENV_PREFIX + "ENCRYPTED_CONTENT")
-    ENCRYPTED_KEY = EnvManager.get(ENV_PREFIX + "ENCRYPTED_KEY")
+    ENCRYPTION_KEY = EnvManager.get(
+        ENV_PREFIX + "ENCRYPTION_KEY")  # For Login Without Cache
+    IV = EnvManager.get(ENV_PREFIX + "IV")  # For Login Without Cache
+    USERNAME = EnvManager.get(ENV_PREFIX + "USERNAME")  # For Login
+    PASSWORD = EnvManager.get(ENV_PREFIX + "PASSWORD")  # For Login
+    ENCRYPTED_CONTENT = EnvManager.get(
+        ENV_PREFIX + "ENCRYPTED_CONTENT")  # For Login Without Cache
+    ENCRYPTED_KEY = EnvManager.get(
+        ENV_PREFIX + "ENCRYPTED_KEY")  # For Login Without Cache
     RSA_PUBLIC_KEY = EnvManager.get(
-        ENV_PREFIX + "RSA_PUBLIC_KEY").replace("\\n", "\n")
-    FINAL_POST_DATA = '"iv": "ZQ9YwwFtzH8+JlstwWUa4zDOtfrZ2MHPODYUc7QhA7I="}'
+        ENV_PREFIX + "RSA_PUBLIC_KEY").replace("\\n", "\n")  # For Login (Always Constant)
     POST_DATA = {"content": ENCRYPTED_CONTENT, "key": ENCRYPTED_KEY, "iv": IV}
     FINAL_POST_DATA = json.dumps(POST_DATA, separators=(',', ':'))
-    RAW_OBJECT = {"Input_Account": f"{USERNAME}", "Input_Passwd": f"{ENCODED_PASSWORD}=",
+    RAW_OBJECT = {"Input_Account": "", "Input_Passwd": "",
                   "currLang": "en", "RememberPassword": 0, "SHA512_password": False}
-    RAW_CONTENT = json.dumps(RAW_OBJECT, separators=(',', ':'))
