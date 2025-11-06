@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 class TLExtender(metaclass=SingletonMeta):
     def __init__(self):
         self.session = Session()
+        self.session_period = int(
+            ConfigManager.get("extender.session_time", 3))
         self.last_refresh = None
         self.id = None
 
@@ -93,9 +95,8 @@ class TLExtender(metaclass=SingletonMeta):
 
         now = datetime.now()
         period = now - self.last_refresh
-        session_period = int(ConfigManager.get("extender.session_time", 3))
 
-        if period >= timedelta(minutes=session_period):
+        if period >= timedelta(minutes=self.session_period):
             logger.info("The period session has exceeded.")
             self.login()
 
