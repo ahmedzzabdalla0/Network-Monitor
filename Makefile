@@ -1,7 +1,7 @@
 exe:
 	pyinstaller --onefile --paths=./src --distpath=./out --noconfirm --clean --icon=./favicon.ico --add-data "./favicon.ico;." --name="WLAN Monitor" src/wlan/main.py
 
-reinstall:
+ri:
 	pip install -e . --force-reinstall --no-deps
 
 start:
