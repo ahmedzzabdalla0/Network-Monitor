@@ -2,7 +2,7 @@ main:
   wait_time: 3
 
   # 10 (DEBUG) | 20 (INFO) | 30 (WARNING) | 40 (ERROR) | 50 (CRITICAL)
-  logging_level: 20
+  logging_level: 30
 
   # Columns will be presented [Note: Values Of Columns Must Follow The Standard Format]
   columns:
@@ -26,6 +26,14 @@ main:
       "Name": "Mam"
       "Device Type": PHONE
 
+    "22:7c:e0:89:25:8b":
+      "Name": "Mam's Iphone"
+      "Device Type": PHONE
+
+    "48:f1:7f:47:76:ba":
+      "Name": "Laptop Mam"
+      "Device Type": PC
+
     "28:2d:7f:9f:54:05":
       "Name": "My Iphone"
       "Device Type": PHONE
@@ -38,6 +46,10 @@ main:
       "Name": "Dad"
       "Device Type": PHONE
 
+    "28:7b:11:05:99:2e":
+      "Name": "TV"
+      "Device Type": TV
+
     "fa:5d:81:3b:66:4a":
       "Device Type": TABLET
 
@@ -45,13 +57,31 @@ router:
   protocol: http
   ip: 192.168.1.1
   excluded_macs:
+    # Externder
     - b2:19:21:09:96:75
+
+    # Asmaa
+    # - ac:49:db:52:bd:f2
+
+    # My Phone
+    - 28:2d:7f:9f:54:05
+
+    # PC
+    - 90:de:80:12:2e:8f
   excluded_ips: []
 
 extender:
   protocol: http
   ip: 192.168.1.207
-  excluded_macs: []
+  excluded_macs:
+    # Asmaa
+    # - ac:49:db:52:bd:f2
+
+    # My Phone
+    - 28:2d:7f:9f:54:05
+
+    # PC
+    - 90:de:80:12:2e:8f
   excluded_ips: []
   session_time: 3
 
