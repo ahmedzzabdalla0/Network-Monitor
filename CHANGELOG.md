@@ -1,6 +1,20 @@
 # Changelog
 
-## [1.2.0] - Upcoming
+## [1.2.0] - 2026-04-22
+
+### Added
+
+- Telegram bot menu with runtime commands:
+  - show current connected devices
+  - start/stop monitor loop
+  - retry after crash
+  - reload `config.yaml`
+  - add/update/delete cached hosts in config
+- Crash notification message to Telegram with retry instruction.
+
+### Changed
+
+- Version bumped to `1.2.0`.
 
 ### To Do
 
