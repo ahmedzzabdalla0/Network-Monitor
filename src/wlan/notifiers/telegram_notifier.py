@@ -79,7 +79,7 @@ class TelegramNotifier:
         lines = []
         for column, value in device_row.items():
             if pd.notna(value):  # Skip NaN values
-                lines.append(f"  • {column}: {value}")
+                lines.append(f"  • {escape(str(column))}: {escape(str(value))}")
         return "\n".join(lines)
 
     def _format_message(self, df: pd.DataFrame, event: DeviceChangeEvent) -> str:
@@ -104,8 +104,19 @@ class TelegramNotifier:
         # Build message header
         device_count = len(df)
         device_word = "device" if device_count == 1 else "devices"
+        display_names = []
+        if "Name" in df.columns:
+            for value in df["Name"].tolist():
+                if pd.notna(value) and str(value).strip() and str(value).strip().lower() != "unknown":
+                    display_names.append(str(value).strip())
+        if not display_names and "MAC" in df.columns:
+            display_names = [str(mac) for mac in df["MAC"].tolist() if pd.notna(mac)]
+
+        names_label = "Name" if len(display_names) == 1 else "Names"
+        names_value = ", ".join(display_names) if display_names else "Unknown"
         message_parts = [
             f"{emoji} <b>{title}</b>",
+            f"<b>{names_label}:</b> {escape(names_value)}",
             f"<b>Count:</b> {device_count} {device_word}",
             ""
         ]
@@ -186,15 +197,10 @@ class TelegramNotifier:
         max_devices = 20
         rows = []
         for index, (_, row) in enumerate(df.head(max_devices).iterrows(), 1):
-            name = row.get("Name", "Unknown")
-            ip = row.get("IP", "Unknown")
-            mac = row.get("MAC", "Unknown")
-            source = row.get("Source", "Unknown")
+            name = escape(str(row.get("Name", "Unknown")))
             rows.append(
-                f"{index}) <b>{escape(str(name))}</b>\n"
-                f"   IP: <code>{escape(str(ip))}</code>\n"
-                f"   MAC: <code>{escape(str(mac))}</code>\n"
-                f"   Source: {escape(str(source))}"
+                f"<b>Device #{index}: {name}</b>\n"
+                f"{self._format_device_info(row)}"
             )
 
         extra = ""

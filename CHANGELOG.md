@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1] - 2026-04-22
+
+### Fixed
+
+- Prevented crash when all threaded data-source results are `None` by validating DataFrames before merge.
+- Improved data-source retry flow with bounded retries and safe empty fallback.
+- Updated Telegram notification formatting to show `Name/Names` right after status.
+- Updated `👥 Devices Now` output to include full per-device details.
+
 ## [1.2.0] - 2026-04-22
 
 ### Added

@@ -27,7 +27,14 @@ class DataframeUtils:
     @staticmethod
     def finalize_dfs(*dfs: Tuple[pd.DataFrame]) -> pd.DataFrame:
         from wlan.managers import ConfigManager
-        merged: pd.DataFrame = pd.concat(dfs).fillna("Unknown")
+        valid_dfs = [df for df in dfs if isinstance(df, pd.DataFrame)]
+        if not valid_dfs:
+            logger.warning(
+                "No valid DataFrames were returned from data sources; returning empty DataFrame."
+            )
+            return pd.DataFrame()
+
+        merged: pd.DataFrame = pd.concat(valid_dfs, ignore_index=True).fillna("Unknown")
         cached_hosts = ConfigManager.get("main.cached_hosts", {})
         if not isinstance(cached_hosts, dict):
             warning_msg = "Parsing Warring: `cached_hosts` can not be parsed as `dict`."
@@ -136,11 +143,15 @@ class ThreadUtils:
             - No exception handling is provided - exceptions in threads will be lost
         """
         results = [None] * len(callables)
+        errors = [None] * len(callables)
         threads: List[Thread] = []
 
         for i, cal in enumerate(callables):
             def wrapper(index=i, func=cal):
-                results[index] = func()
+                try:
+                    results[index] = func()
+                except Exception as e:
+                    errors[index] = e
             threads.append(Thread(target=wrapper))
 
         for thread in threads:
@@ -148,6 +159,10 @@ class ThreadUtils:
 
         for thread in threads:
             thread.join()
+
+        first_error = next((error for error in errors if error is not None), None)
+        if first_error is not None:
+            raise first_error
 
         return tuple(results)
 
