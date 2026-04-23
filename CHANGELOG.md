@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2] - 2026-04-22
+
+### Fixed
+
+- Updated Telegram event header naming logic:
+  - when `Name` exists but is `Unknown`, message now shows `Name: Unknown`
+  - fallback to MAC is used only when `Name` column is missing
+
 ## [1.2.1] - 2026-04-22
 
 ### Fixed
