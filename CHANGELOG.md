@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.3] - 2026-04-23
+
+### Fixed
+
+- Startup login failures now keep the app alive in safe stop mode instead of exiting.
+- Added startup crash notification flow to Telegram with retry path still available.
+- `/retry` now re-runs full client initialization after startup/session failures.
+
 ## [1.2.2] - 2026-04-22
 
 ### Fixed
