@@ -55,20 +55,42 @@ def main():
 
     # Adabt with exceptions
     def get_extender_devices():
-        try:
-            return extender.get_connected_devices()
-        except Exception as e:
-            logger.error(f"Extender Fails: Trying to relogin, Error: {e}")
-            extender.login()
-            return get_extender_devices()
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            try:
+                return extender.get_connected_devices()
+            except Exception as e:
+                logger.error(
+                    "Extender fetch failed (attempt %s/%s): %s",
+                    attempt,
+                    max_attempts,
+                    e
+                )
+                try:
+                    extender.login()
+                except Exception as login_error:
+                    logger.error("Extender relogin failed: %s", login_error)
+        logger.error("Extender unavailable after retries; using empty dataset.")
+        return pd.DataFrame()
 
     def get_router_devices():
-        try:
-            return router.get_connected_devices()
-        except Exception as e:
-            logger.error(f"Router Fails: Trying to relogin, Error: {e}")
-            router.login_with_cached_data()
-            return get_router_devices()
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            try:
+                return router.get_connected_devices()
+            except Exception as e:
+                logger.error(
+                    "Router fetch failed (attempt %s/%s): %s",
+                    attempt,
+                    max_attempts,
+                    e
+                )
+                try:
+                    router.login_with_cached_data()
+                except Exception as login_error:
+                    logger.error("Router relogin failed: %s", login_error)
+        logger.error("Router unavailable after retries; using empty dataset.")
+        return pd.DataFrame()
 
     # Getter the final db
     def get_devices():
