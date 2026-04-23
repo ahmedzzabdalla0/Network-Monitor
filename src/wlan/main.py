@@ -48,10 +48,24 @@ def main():
 
     # Initialize Network Clients
     extender = TLExtender()
-    extender.login()
-
     router = ZyxelClient()
-    router.login_with_cached_data()
+
+    def initialize_clients():
+        errors = []
+        try:
+            extender.login()
+        except Exception as e:
+            errors.append(f"Extender login failed: {e}")
+            logger.error("Initial extender login failed: %s", e, exc_info=True)
+
+        try:
+            router.login_with_cached_data()
+        except Exception as e:
+            errors.append(f"Router login failed: {e}")
+            logger.error("Initial router login failed: %s", e, exc_info=True)
+
+        if errors:
+            raise RuntimeError(" | ".join(errors))
 
     # Adabt with exceptions
     def get_extender_devices():
@@ -131,8 +145,7 @@ def main():
     def retry_monitor():
         with state.lock:
             try:
-                extender.login()
-                router.login_with_cached_data()
+                initialize_clients()
                 state.running = True
                 state.last_error = None
                 return "🔁 Retry successful. Monitoring resumed."
@@ -199,6 +212,13 @@ def main():
     )
     telegram.start_control_bot()
     telegram.send_text("🤖 Telegram menu is ready. Send /menu to open commands.")
+    try:
+        initialize_clients()
+    except Exception as e:
+        state.last_error = e
+        state.running = False
+        logger.error("Startup login failed; entering safe stop mode: %s", e, exc_info=True)
+        telegram.send_runtime_error(e)
 
     try:
         while True:
