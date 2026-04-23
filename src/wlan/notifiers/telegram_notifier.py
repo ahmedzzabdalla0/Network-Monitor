@@ -106,10 +106,18 @@ class TelegramNotifier:
         device_word = "device" if device_count == 1 else "devices"
         display_names = []
         if "Name" in df.columns:
-            for value in df["Name"].tolist():
-                if pd.notna(value) and str(value).strip() and str(value).strip().lower() != "unknown":
-                    display_names.append(str(value).strip())
-        if not display_names and "MAC" in df.columns:
+            raw_names = [
+                str(value).strip()
+                for value in df["Name"].tolist()
+                if pd.notna(value) and str(value).strip()
+            ]
+            known_names = [name for name in raw_names if name.lower() != "unknown"]
+            if known_names:
+                display_names = known_names
+            elif raw_names:
+                # Keep explicit Unknown instead of falling back to MAC.
+                display_names = ["Unknown"]
+        elif "MAC" in df.columns:
             display_names = [str(mac) for mac in df["MAC"].tolist() if pd.notna(mac)]
 
         names_label = "Name" if len(display_names) == 1 else "Names"
