@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+  <img src="docs/images/wlan-monitor-screenshot.png" alt="WLAN Monitor console output" width="820">
+</p>
+
+<p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white">
   <img alt="Version" src="https://img.shields.io/badge/version-1.2.3-2ea44f">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white">
