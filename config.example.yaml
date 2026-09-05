@@ -1,0 +1,32 @@
+main:
+  wait_time: 3
+  logging_level: 30
+  columns:
+    - Name
+    - IP
+    - MAC
+    - Source
+    - Device Type
+    - Signal Level
+  cached_hosts: {}
+
+router:
+  protocol: http
+  ip: 192.168.1.1
+  excluded_macs: []
+  excluded_ips: []
+
+extender:
+  protocol: http
+  ip: 192.168.1.2
+  excluded_macs: []
+  excluded_ips: []
+  session_time: 3
+
+telegram:
+  chat_id: 0
+
+windows_notify:
+  columns:
+    - Name
+    - Source

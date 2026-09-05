@@ -17,12 +17,14 @@
 ## Why This Project?
 
 `WLAN Monitor` continuously tracks devices on your local network, merges data from:
+
 - **Zyxel router**
 - **TP-Link extender**
 
 Then it detects who connected/disconnected and notifies you in real time.
 
 It is especially useful for:
+
 - Smart-home monitoring
 - Unauthorized device detection
 - Family device presence tracking
@@ -65,7 +67,7 @@ After startup, use `/menu` in Telegram.
 ### Examples
 
 ```bash
-/host_set aa:bb:cc:dd:ee:ff Ahmed|PHONE
+/host_set aa:bb:cc:dd:ee:ff Example User|PHONE
 /host_del aa:bb:cc:dd:ee:ff
 ```
 
@@ -123,9 +125,17 @@ pip install -e .[dev]
 
 ## Configuration
 
-### 1) `config.yaml`
+### 1) Create `config.yaml`
+
+Copy `config.example.yaml` to `config.yaml`, then replace the example values
+with your local router, extender, device, and Telegram settings:
+
+```bash
+copy config.example.yaml config.yaml
+```
 
 This file controls runtime behavior:
+
 - polling interval (`main.wait_time`)
 - output columns (`main.columns`)
 - host aliases (`main.cached_hosts`)
@@ -134,26 +144,19 @@ This file controls runtime behavior:
 - Telegram chat id
 - Windows notification columns
 
-> Keep your own values in `config.yaml` and avoid sharing private network data publicly.
+`config.yaml` is ignored by Git and must never be committed. Keep your own
+values there and avoid sharing private network data publicly.
 
-### 2) `.env`
+### 2) Create `.env`
 
-Create a `.env` file in the runtime base path with required secrets:
+Copy `.env.example` to `.env`, then fill in the required secrets:
 
 ```env
-TELEGRAM_BOT_TOKEN=
-EXTENDER_PASSWORD=
-EXTENDER_R_SU_ENCRYPT=
-EXTENDER_T_SU_ENCRYPT=
-
-ROUTER_USERNAME=
-ROUTER_PASSWORD=
-ROUTER_ENCRYPTION_KEY=
-ROUTER_IV=
-ROUTER_ENCRYPTED_CONTENT=
-ROUTER_ENCRYPTED_KEY=
-ROUTER_RSA_PUBLIC_KEY=
+copy .env.example .env
 ```
+
+`.env` is ignored by Git. Never put tokens, passwords, encryption keys, or
+private network details in source files, issue reports, or committed config.
 
 ---
 
@@ -203,6 +206,7 @@ This generates a standalone executable in `out/`.
 8. Send Telegram + Windows notifications
 
 If an error happens:
+
 - app enters safe stop mode
 - sends crash details to Telegram
 - waits for `/retry`
@@ -242,7 +246,7 @@ The monitor will stay alive in safe stop mode; use `/retry` to reinitialize.
 PRs and ideas are welcome.
 
 If you open an issue, include:
+
 - your version
 - relevant log lines
 - whether issue is router, extender, or Telegram related
-

@@ -79,7 +79,8 @@ class TelegramNotifier:
         lines = []
         for column, value in device_row.items():
             if pd.notna(value):  # Skip NaN values
-                lines.append(f"  • {escape(str(column))}: {escape(str(value))}")
+                lines.append(
+                    f"  • {escape(str(column))}: {escape(str(value))}")
         return "\n".join(lines)
 
     def _format_message(self, df: pd.DataFrame, event: DeviceChangeEvent) -> str:
@@ -111,14 +112,16 @@ class TelegramNotifier:
                 for value in df["Name"].tolist()
                 if pd.notna(value) and str(value).strip()
             ]
-            known_names = [name for name in raw_names if name.lower() != "unknown"]
+            known_names = [
+                name for name in raw_names if name.lower() != "unknown"]
             if known_names:
                 display_names = known_names
             elif raw_names:
                 # Keep explicit Unknown instead of falling back to MAC.
                 display_names = ["Unknown"]
         elif "MAC" in df.columns:
-            display_names = [str(mac) for mac in df["MAC"].tolist() if pd.notna(mac)]
+            display_names = [str(mac)
+                             for mac in df["MAC"].tolist() if pd.notna(mac)]
 
         names_label = "Name" if len(display_names) == 1 else "Names"
         names_value = ", ".join(display_names) if display_names else "Unknown"
@@ -248,7 +251,7 @@ class TelegramNotifier:
             "- /reload_config → Reload config.yaml\n\n"
             "<b>Manage cached hosts:</b>\n"
             "- /host_set &lt;mac&gt; &lt;name&gt;|&lt;device_type&gt;\n"
-            "  Example: <code>/host_set aa:bb:cc:dd:ee:ff Ahmed|PHONE</code>\n"
+            "  Example: <code>/host_set aa:bb:cc:dd:ee:ff Example User|PHONE</code>\n"
             "- /host_del &lt;mac&gt;\n"
             "  Example: <code>/host_del aa:bb:cc:dd:ee:ff</code>\n"
             "- /hosts → Show cached hosts\n"
@@ -332,7 +335,7 @@ class TelegramNotifier:
             if len(parts) != 2:
                 self.send_text(
                     "Invalid format.\n"
-                    "Example: <code>/host_set aa:bb:cc:dd:ee:ff Ahmed|PHONE</code>"
+                    "Example: <code>/host_set aa:bb:cc:dd:ee:ff Example User|PHONE</code>"
                 )
                 return
 
@@ -341,13 +344,14 @@ class TelegramNotifier:
             if not sep:
                 self.send_text(
                     "Missing separator '|'.\n"
-                    "Example: <code>/host_set aa:bb:cc:dd:ee:ff Ahmed|PHONE</code>"
+                    "Example: <code>/host_set aa:bb:cc:dd:ee:ff Example User|PHONE</code>"
                 )
                 return
 
             name = name_part.strip()
             device_type = type_part.strip().upper()
-            self.send_text(self._control_callbacks["upsert_host"](mac, name, device_type))
+            self.send_text(self._control_callbacks["upsert_host"](
+                mac, name, device_type))
 
         @self.bot.message_handler(commands=['host_del'])
         def _host_delete(message):
@@ -394,9 +398,11 @@ class TelegramNotifier:
 
         def _poll():
             try:
-                self.bot.infinity_polling(skip_pending=True, timeout=30, long_polling_timeout=30)
+                self.bot.infinity_polling(
+                    skip_pending=True, timeout=30, long_polling_timeout=30)
             except Exception as e:
-                logger.error("Telegram polling loop stopped unexpectedly: %s", e, exc_info=True)
+                logger.error(
+                    "Telegram polling loop stopped unexpectedly: %s", e, exc_info=True)
 
         self._polling_thread = threading.Thread(
             target=_poll,
