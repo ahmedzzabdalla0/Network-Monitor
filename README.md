@@ -1,12 +1,12 @@
 # WLAN Monitor
 
 <p align="center">
-  <b>Real-time home network monitoring for Zyxel Router + TP-Link Extender</b><br>
-  Get instant connect/disconnect alerts in Telegram and Windows notifications.
+  <img src="docs/images/wlan-monitor-screenshot.png" alt="WLAN Monitor console output" width="820">
 </p>
 
 <p align="center">
-  <img src="docs/images/wlan-monitor-screenshot.png" alt="WLAN Monitor console output" width="820">
+  <b>Real-time home network monitoring for Zyxel Router + TP-Link Extender</b><br>
+  Get instant connect/disconnect alerts in Telegram and Windows notifications.
 </p>
 
 <p align="center">
