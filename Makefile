@@ -4,8 +4,11 @@ exe:
 ri:
 	pip install -e . --force-reinstall --no-deps
 
-start:
-	python -m src.wlan.router.client
-
 main:
 	python -m src.wlan.main
+
+router:
+	python -m src.wlan.router.client
+
+extender:
+	python -m src.wlan.extender.client

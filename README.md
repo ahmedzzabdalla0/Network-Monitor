@@ -162,11 +162,13 @@ private network details in source files, issue reports, or committed config.
 
 ## Run
 
-### Main monitor (recommended)
+### Router and extender monitor (recommended)
 
 ```bash
 python -m wlan.main
 ```
+
+This runs the complete monitor using both the router and the extender.
 
 ### Router-only CLI (debug/inspection)
 
@@ -174,11 +176,18 @@ python -m wlan.main
 python -m wlan.router.client
 ```
 
+### Extender-only CLI (debug/inspection)
+
+```bash
+python -m wlan.extender.client
+```
+
 ### Makefile shortcuts
 
 ```bash
 make main
-make start
+make router
+make extender
 make exe
 ```
 

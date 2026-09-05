@@ -8,7 +8,13 @@ main:
     - Source
     - Device Type
     - Signal Level
-  cached_hosts: {}
+  cached_hosts:
+    "00:11:22:33:44:55":
+      "Name": "Example Phone"
+      "Device Type": PHONE
+    "00:11:22:33:44:66":
+      "Name": "Example Laptop"
+      "Device Type": PC
 
 router:
   protocol: http
